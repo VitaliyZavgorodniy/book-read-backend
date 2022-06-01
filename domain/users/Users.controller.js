@@ -14,7 +14,7 @@ class usersController {
   login = async (req, res) => {
     const result = await service.loginUser(req.body);
 
-    res.status(200).json({ status: "success", code: 200, result });
+    res.status(200).json(result);
   };
 
   loginGoogle = async (req, res) => {
@@ -24,9 +24,9 @@ class usersController {
   };
 
   current = async (req, res) => {
-    const { name } = req.user;
+    const { name, avatarURL } = req.user;
 
-    res.status(200).json({ name });
+    res.status(200).json({ name, avatarURL });
   };
 
   logout = async (req, res) => {

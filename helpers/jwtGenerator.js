@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 
-const { SECRET_KEY } = process.env;
+const { SECRET_SALT } = process.env;
 
-const jwtGenerator = (payload) => jwt.sign(payload, SECRET_KEY);
+const jwtGenerator = (payload) => jwt.sign(payload, SECRET_SALT);
 
 module.exports = jwtGenerator;
