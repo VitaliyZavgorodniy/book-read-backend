@@ -4,7 +4,6 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 
 const usersRouter = require("./domain/users/Users.API");
-// const contactsRouter = require("./domain/users");
 
 const { DB_CLUSTER, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
 const DB_PARAMS = "retryWrites=true&w=majority";
@@ -17,7 +16,6 @@ app.use(express.json());
 app.use(express.static(__dirname + "/public"));
 
 app.use("/api/users", usersRouter);
-// app.use("/api/contacts", contactsRouter);
 
 mongoose
   .connect(DB_HOST)
