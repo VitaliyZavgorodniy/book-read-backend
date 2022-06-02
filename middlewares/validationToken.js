@@ -2,6 +2,7 @@ const createError = require('http-errors');
 const jwt = require('jsonwebtoken');
 
 const usersService = require('../domain/users/users.service');
+console.log(usersService);
 
 const { SECRET_SALT } = process.env;
 const service = new usersService();

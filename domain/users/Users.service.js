@@ -13,6 +13,8 @@ const { User } = require('./users.model');
 const { FRONTEND_URL, GOOGLE_CLIENT, GOOGLE_SECRET, BASE_URL } = process.env;
 
 class usersService {
+  constructor() {}
+
   findUser = asyncHandler(async (parameter) => {
     const result = await User.findOne(parameter, '-createdAt -updatedAt');
 
