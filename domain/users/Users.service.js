@@ -10,8 +10,7 @@ const { jwtGenerator } = require('../../helpers');
 
 const { User } = require('./users.model');
 
-const { FRONTEND_URL, GOOGLE_CLIENT, GOOGLE_SECRET, BASE_URL, PORT } =
-  process.env;
+const { FRONTEND_URL, GOOGLE_CLIENT, GOOGLE_SECRET, BASE_URL } = process.env;
 
 class usersService {
   findUser = asyncHandler(async (parameter) => {
