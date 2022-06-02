@@ -33,26 +33,21 @@ class usersService {
     }
 
     const user = await User.create({
+      name,
       email,
       password: await bcrypt.hash(password, 10),
       avatarURL: gravatar.url(email, {
         s: '250',
       }),
-      name,
     });
 
-    const token = jwtGenerator({ id: user._id });
-    this.updateUserById(user._id, { token });
+    const token = await this.userTokenUpdate(user._id);
 
     return { token };
   });
 
   loginUser = asyncHandler(async ({ email, password }) => {
     const user = await this.findUser({ email }, '-createdAt -updatedAt');
-
-    if (!user.verify) {
-      throw createError(400, 'User not verified');
-    }
 
     if (!user) {
       throw NotFound('User not found');
@@ -61,8 +56,7 @@ class usersService {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) throw createError(401, 'Email or password is wrong');
 
-    const token = jwtGenerator({ id: user._id });
-    this.updateUserById(user._id, { token });
+    const token = await this.userTokenUpdate(user._id);
 
     return { token };
   });
@@ -109,26 +103,34 @@ class usersService {
 
     const user = await this.findUser({ email: userData.email });
 
-    if (!user) {
-      const avatar =
-        userData.picture ??
-        gravatar.url(email, {
-          s: '250',
-        });
-
-      const newUser = await User.create({
-        email: userData.email,
-        name: userData.name,
-        avatarURL: avatar,
-      });
-
-      const token = jwtGenerator({ id: newUser._id });
-      this.updateUserById(newUser._id, { token });
+    if (user) {
+      const token = await this.userTokenUpdate(user._id);
 
       return `${FRONTEND_URL}?token=${token}`;
     }
 
-    return `${FRONTEND_URL}?token=${user.token}`;
+    const avatar =
+      userData.picture ??
+      gravatar.url(email, {
+        s: '250',
+      });
+
+    const newUser = await User.create({
+      email: userData.email,
+      name: userData.name,
+      avatarURL: avatar,
+    });
+
+    const token = await this.userTokenUpdate(newUser._id);
+
+    return `${FRONTEND_URL}?token=${token}`;
+  });
+
+  userTokenUpdate = asyncHandler(async (id) => {
+    const token = jwtGenerator({ id });
+    this.updateUserById(id, { token });
+
+    return token;
   });
 
   logoutUser = asyncHandler(async (id) => {

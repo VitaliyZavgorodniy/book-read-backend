@@ -12,7 +12,6 @@ const DB_HOST = `mongodb+srv://${DB_USER}:${DB_PASSWORD}@${DB_CLUSTER}/${DB_NAME
 const app = express();
 app.use(cors());
 app.use(express.json());
-
 app.use(express.static(__dirname + '/public'));
 
 app.use('/api/users', usersRouter);
