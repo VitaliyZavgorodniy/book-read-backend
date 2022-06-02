@@ -3,7 +3,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
-const { usersRouter } = require('./domain/users');
+const usersRouter = require('./domain/users/users.API');
 
 const { DB_CLUSTER, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
 const DB_PARAMS = 'retryWrites=true&w=majority';
