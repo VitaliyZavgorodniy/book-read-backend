@@ -1,4 +1,4 @@
-const usersRouter = require('./users.API');
+const usersRouter = require('./usersAPI');
 const usersService = require('./users.service');
 const usersController = require('./users.controller');
 const { User, userSchemas } = require('./users.model');
