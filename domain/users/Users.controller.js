@@ -1,6 +1,6 @@
-const usersService = require("./Users.service");
+const usersService = require('./users.service');
 
-const { resizeAvatar } = require("../../helpers");
+const { resizeAvatar } = require('../../helpers');
 
 const service = new usersService();
 
@@ -18,9 +18,17 @@ class usersController {
   };
 
   loginGoogle = async (req, res) => {
-    const result = await service.loginUserGoogle(req.body);
+    const redirectUrl = await service.loginUserGoogle(req.body);
 
-    res.status(200).json(result);
+    res.redirect(redirectUrl);
+  };
+
+  loginGoogleRedirect = async (req, res) => {
+    const fullUrl = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
+
+    const redirectUrl = await service.loginUserGoogleRedirect(fullUrl);
+
+    res.redirect(redirectUrl);
   };
 
   current = async (req, res) => {

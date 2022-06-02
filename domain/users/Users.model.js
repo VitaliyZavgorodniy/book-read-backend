@@ -1,5 +1,5 @@
-const { Schema, model } = require("mongoose");
-const Joi = require("joi");
+const { Schema, model } = require('mongoose');
+const Joi = require('joi');
 
 const emailRegexp =
   /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
@@ -17,11 +17,6 @@ const userSchema = Schema(
       type: String,
       unique: true,
       match: emailRegexp,
-      default: null,
-    },
-    googleId: {
-      type: String,
-      unique: true,
       default: null,
     },
     avatarURL: String,
@@ -44,17 +39,11 @@ const loginSchema = Joi.object({
   password: Joi.string().required(),
 });
 
-const loginGoogleSchema = Joi.object({
-  name: Joi.string(),
-  googleId: Joi.string().required(),
-});
-
 const userSchemas = {
   register: registerSchema,
   login: loginSchema,
-  loginGoogle: loginGoogleSchema,
 };
 
-const User = model("user", userSchema);
+const User = model('user', userSchema);
 
 module.exports = { User, userSchemas };

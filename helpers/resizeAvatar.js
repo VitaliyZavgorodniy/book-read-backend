@@ -1,7 +1,7 @@
-const fs = require("fs/promises");
-const createError = require("http-errors");
-const Jimp = require("jimp");
-const { v4: uuidv4 } = require("uuid");
+const fs = require('fs/promises');
+const createError = require('http-errors');
+const Jimp = require('jimp');
+const { v4: uuidv4 } = require('uuid');
 
 const RESIZE_HEIGHT = 250;
 const RESIZE_WIDTH = 250;
