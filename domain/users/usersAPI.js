@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-const { userSchemas } = require('./users.model');
-const usersController = require('./users.controller');
+const { userSchemas } = require('./usersModel');
+const usersController = require('./usersController');
 
 const { ctrlWrapper } = require('../../helpers');
 const {

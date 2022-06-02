@@ -1,7 +1,7 @@
 const usersRouter = require('./usersAPI');
-const usersService = require('./users.service');
-const usersController = require('./users.controller');
-const { User, userSchemas } = require('./users.model');
+const usersService = require('./usersService');
+const usersController = require('./usersController');
+const { User, userSchemas } = require('./usersModel');
 
 module.exports = {
   usersRouter,

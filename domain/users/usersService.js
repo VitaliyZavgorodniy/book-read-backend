@@ -8,13 +8,11 @@ const axios = require('axios');
 
 const { jwtGenerator } = require('../../helpers');
 
-const { User } = require('./users.model');
+const { User } = require('./usersModel');
 
 const { FRONTEND_URL, GOOGLE_CLIENT, GOOGLE_SECRET, BASE_URL } = process.env;
 
 class usersService {
-  constructor() {}
-
   findUser = asyncHandler(async (parameter) => {
     const result = await User.findOne(parameter, '-createdAt -updatedAt');
 
