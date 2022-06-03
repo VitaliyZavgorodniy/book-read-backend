@@ -2,7 +2,6 @@ const asyncHandler = require('express-async-handler');
 const createError = require('http-errors');
 const { NotFound } = require('http-errors');
 const bcrypt = require('bcryptjs');
-const gravatar = require('gravatar');
 const queryString = require('query-string');
 const axios = require('axios');
 
@@ -36,9 +35,6 @@ class usersService {
       name,
       email,
       password: await bcrypt.hash(password, 10),
-      avatarURL: gravatar.url(email, {
-        s: '250',
-      }),
     });
 
     const token = await this.userTokenUpdate(user._id);
@@ -58,7 +54,7 @@ class usersService {
 
     const token = await this.userTokenUpdate(user._id);
 
-    return { token };
+    return { token, name: user.name };
   });
 
   loginUserGoogle = asyncHandler(async () => {
@@ -109,11 +105,7 @@ class usersService {
       return `${FRONTEND_URL}?token=${token}`;
     }
 
-    const avatar =
-      userData.picture ??
-      gravatar.url(email, {
-        s: '250',
-      });
+    const avatar = userData.picture ?? null;
 
     const newUser = await User.create({
       email: userData.email,

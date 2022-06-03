@@ -1,0 +1,247 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "version": "1.0.0",
+    "title": "Book Read API",
+    "description": "Documentaion for Book Read application"
+  },
+  "consumes": ["application/json", "multipart/form-data"],
+  "produces": ["application/json"],
+  "servers": [
+    { "url": "http://localhost:4000/api" },
+    { "url": "https://book-read-backend.herokuapp.com/api" }
+  ],
+  "tags": [
+    { "name": "Users", "description": "Authorization and login endpoints" },
+    { "name": "Books", "description": "Books manipulation endpoints" },
+    { "name": "Trainings", "description": "Training manipulation endpoints" }
+  ],
+  "paths": {
+    "/register": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "User registration",
+        "parameters": [],
+
+        "requestBody": {
+          "description": "Object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistrationRequest"
+              }
+            }
+          }
+        },
+
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "User authorization",
+        "parameters": [],
+
+        "requestBody": {
+          "description": "Object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          }
+        },
+
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/login/google": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "User auth/registration through Google ID",
+        "parameters": []
+      }
+    },
+    "/logout": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "User logout and remove token",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+
+        "responses": {
+          "201": {
+            "description": "Successful operation"
+          }
+        }
+      }
+    },
+    "/me": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Current user information",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrentUserResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+
+  "components": {
+    "schemas": {
+      "RegistrationRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email",
+            "example": "your@mail.com"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password",
+            "example": "Qwerty123"
+          },
+          "name": {
+            "type": "string",
+            "description": "User's name",
+            "example": "User Lastname"
+          }
+        }
+      },
+
+      "RegistrationResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "ok"
+          }
+        }
+      },
+
+      "LoginRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "your@mail.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "Qwerty1205"
+          }
+        }
+      },
+
+      "LoginResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "ok"
+          },
+          "result": {
+            "type": "object",
+            "properties": {
+              "token": {
+                "type": "string",
+                "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyOTlmNzBhZDNmZTgxNzY2MjA0ZjE3NyIsImlhdCI6MTY1NDI1NzQ4M30.jbYYRC_5FFT2Iug51q7bIrk8sepBg4vEEb8SuyoVY6g"
+              },
+              "name": {
+                "type": "string",
+                "example": "User Lastname"
+              },
+              "avatarURL": {
+                "type": "string",
+                "description": "User avatar, may not come",
+                "example": "https://images.com/avatar.com"
+              }
+            }
+          }
+        }
+      },
+
+      "CurrentUserResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "ok"
+          },
+          "result": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string",
+                "example": "User' email"
+              },
+              "name": {
+                "type": "string",
+                "example": "User Lastname"
+              },
+              "avatarURL": {
+                "type": "string",
+                "description": "User avatar, may not come",
+                "example": "https://images.com/avatar.com"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

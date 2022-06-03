@@ -6,15 +6,15 @@ const service = new usersService();
 
 class usersController {
   register = async (req, res) => {
-    const result = await service.createUser(req.body);
+    await service.createUser(req.body);
 
-    res.status(200).json(result);
+    res.status(200).json({ status: 200, message: 'ok' });
   };
 
   login = async (req, res) => {
     const result = await service.loginUser(req.body);
 
-    res.status(200).json(result);
+    res.status(200).json({ status: 200, message: 'ok', result });
   };
 
   loginGoogle = async (req, res) => {
@@ -32,9 +32,9 @@ class usersController {
   };
 
   current = async (req, res) => {
-    const { name, avatarURL } = req.user;
+    const { name, avatarURL, email } = req.user;
 
-    res.status(200).json({ name, avatarURL });
+    res.status(200).json({ name, avatarURL, email });
   };
 
   logout = async (req, res) => {
@@ -51,7 +51,7 @@ class usersController {
       avatarPath
     );
 
-    res.status(200).json(result);
+    res.status(200).json({ status: 200, message: 'ok', result });
   };
 }
 
