@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.json');
 require('dotenv').config();
 
 const usersRouter = require('./domain/users/usersAPI');
@@ -14,8 +16,10 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(__dirname + '/public'));
 
-app.use('/api/users', usersRouter);
 app.use('/api/books', booksRouter);
+app.use('/api', usersRouter);
+app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 
 mongoose
   .connect(DB_HOST)

@@ -25,12 +25,12 @@ router.get('/login/google', ctrlWrapper(ctrl.loginGoogle));
 
 router.get('/login/google-redirect', ctrlWrapper(ctrl.loginGoogleRedirect));
 
-router.get('/current', validationToken, ctrlWrapper(ctrl.current));
+router.get('/me', validationToken, ctrlWrapper(ctrl.current));
 
 router.get('/logout', validationToken, ctrlWrapper(ctrl.logout));
 
 router.patch(
-  '/avatars',
+  '/update-avatar',
   multerUpload.single('image'),
   validationToken,
   ctrlWrapper(ctrl.updateAvatar)

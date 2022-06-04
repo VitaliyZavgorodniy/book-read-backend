@@ -11,9 +11,9 @@ const ctrl = new BooksController();
 
 router.post('/', validation(bookSchemas.add), ctrlWrapper(ctrl.add));
 
-// router.post('/login', validation(userSchemas.login), ctrlWrapper(ctrl.login));
+router.get('/library', ctrlWrapper(ctrl.getLibrary));
 
-// router.get('/login/google', ctrlWrapper(ctrl.loginGoogle));
+// router.post('/login', validation(userSchemas.login), ctrlWrapper(ctrl.login));
 
 // router.get('/login/google-redirect', ctrlWrapper(ctrl.loginGoogleRedirect));
 
