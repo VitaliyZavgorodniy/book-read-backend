@@ -18,19 +18,19 @@ class booksService {
     return result ?? null;
   });
 
-  findBooks = asyncHandler(async (parameter) => {
+  findBooks = asyncHandler(async () => {
     const result = await Book.find({ owner: _id }).populate('owner');
     console.log(result);
     return result ?? null;
   });
 
   updateBookById = asyncHandler(async (id, payload) => {
-    const result = await Book.findByIdAndUpdate(id, payload);
+    const result = await Book.findOneAndUpdate(id, payload);
 
     return result;
   });
 
-  addBook = asyncHandler(async ({ title, author, pages, year }) => {
+  addBook = asyncHandler(async ({ title, author, pages, year, status }) => {
     const result = await this.findBook({ title });
 
     if (result) {
@@ -42,6 +42,7 @@ class booksService {
       author,
       pages,
       year,
+      status,
     });
   });
 
