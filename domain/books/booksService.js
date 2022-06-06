@@ -9,8 +9,6 @@ const { jwtGenerator } = require('../../helpers');
 
 const { Book } = require('./booksModel');
 
-// const { FRONTEND_URL, GOOGLE_CLIENT, GOOGLE_SECRET, BASE_URL } = process.env;
-
 class booksService {
   findBook = asyncHandler(async (parameter) => {
     const result = await Book.findOne(parameter, '-createdAt -updatedAt');
@@ -18,48 +16,39 @@ class booksService {
     return result ?? null;
   });
 
-  findBooks = asyncHandler(async () => {
-    const result = await Book.find({ owner: _id }).populate('owner');
-    console.log(result);
-    return result ?? null;
-  });
-
-  updateBookById = asyncHandler(async (id, payload) => {
-    const result = await Book.findOneAndUpdate(id, payload);
-
-    return result;
-  });
-
-  addBook = asyncHandler(async ({ title, author, pages, year, status }) => {
+  addBook = asyncHandler(async (req, res) => {
+    const { title } = req.params;
     const result = await this.findBook({ title });
 
     if (result) {
       throw createError(409, 'Book exist');
     }
-
-    const book = await Book.create({
-      title,
-      author,
-      pages,
-      year,
-      status,
-    });
+    const { _id } = req.user;
+    const book = await Book.create({ ...req.body, owner: _id });
+    return book;
   });
-
-  // loginUser = asyncHandler(async ({ email, password }) => {
-  //   const user = await this.findUser({ email }, '-createdAt -updatedAt');
-
-  //   if (!user) {
-  //     throw NotFound('User not found');
-  //   }
-
-  //   const isMatch = await bcrypt.compare(password, user.password);
-  //   if (!isMatch) throw createError(401, 'Email or password is wrong');
-
-  //   const token = await this.userTokenUpdate(user._id);
-
-  //   return { token };
-  // });
+  findBooks = asyncHandler(async (owner) => {
+    const result = await Book.find(owner, '-createdAt -updatedAt').populate(
+      'owner',
+      'email'
+    );
+    return result ?? null;
+  });
+  // updateBook = asyncHandler(async () => {});
+  addResume = asyncHandler(async (req) => {
+    const { _id } = req.params;
+    const result = await Book.findOneAndUpdate(
+      { _id },
+      { resume },
+      {
+        new: true,
+      }
+    );
+    if (!result) {
+      throw createError(409, 'Book not exist');
+    }
+  });
 }
-
 module.exports = booksService;
+
+

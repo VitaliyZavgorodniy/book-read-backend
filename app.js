@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
 require('dotenv').config();
-
+const libraryRouter = require('./domain/library/libraryAPI');
 const usersRouter = require('./domain/users/usersAPI');
 const booksRouter = require('./domain/books/booksAPI');
 const { DB_CLUSTER, DB_USER, DB_PASSWORD, DB_NAME } = process.env;

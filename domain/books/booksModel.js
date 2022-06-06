@@ -1,5 +1,6 @@
 const { Schema, model } = require('mongoose');
 const Joi = require('joi');
+const { array } = require('joi');
 
 const bookSchema = Schema(
   {
@@ -18,10 +19,14 @@ const bookSchema = Schema(
     },
     status: {
       type: String,
+      default: 'Going to read',
     },
     owner: {
       type: Schema.Types.ObjectId,
       ref: 'user',
+    },
+    resume: {
+      type: String,
     },
   },
   { versionKey: false, timestamps: true }
@@ -34,9 +39,12 @@ const addBookSchema = Joi.object({
   year: Joi.string().min(4).required(),
   status: Joi.string(),
 });
-
+const updateResumeSchema = Joi.object({
+  resume: Joi.array().required(),
+});
 const bookSchemas = {
   add: addBookSchema,
+  resume: updateResumeSchema,
 };
 
 const Book = model('book', bookSchema);
