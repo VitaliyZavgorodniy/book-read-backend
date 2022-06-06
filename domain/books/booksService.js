@@ -34,19 +34,18 @@ class booksService {
     );
     return result ?? null;
   });
-  // updateBook = asyncHandler(async () => {});
-  addResume = asyncHandler(async (req) => {
-    const { _id } = req.params;
-    const result = await Book.findOneAndUpdate(
-      { _id },
-      { resume },
-      {
-        new: true,
-      }
-    );
+  deliteBook = asyncHandler(async (id) => {
+    const result = await Book.findByIdAndDelete(id);
+  });
+  addResume = asyncHandler(async ({ id, resume }) => {
+    const result = await Book.findOneAndUpdate({ id }, resume, {
+      new: true,
+    });
     if (!result) {
       throw createError(409, 'Book not exist');
     }
+    console.log(result);
+    return result;
   });
 }
 module.exports = booksService;

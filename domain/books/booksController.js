@@ -19,13 +19,23 @@ class booksController {
     });
   };
   addResume = async (req, res) => {
-    console.log({});
-    const result = await service.addResume({ resume });
+    const id = req.params;
+    const resume = req.body;
+    const result = await service.addResume({ id, resume });
     res.json({
       status: 'success',
       code: 200,
       message: 'Created successfully',
-      data: push(result),
+      data: { result },
+    });
+  };
+  deliteBook = async (req, res) => {
+    const { id } = req.params;
+    const delitedBook = await service.deliteBook(id);
+    res.json({
+      status: 'success',
+      code: 200,
+      message: 'Delited successfully',
     });
   };
 }

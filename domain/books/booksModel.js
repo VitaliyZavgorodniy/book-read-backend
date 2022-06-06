@@ -1,6 +1,6 @@
 const { Schema, model } = require('mongoose');
 const Joi = require('joi');
-const { array } = require('joi');
+// const { array } = require('joi');
 
 const bookSchema = Schema(
   {
@@ -19,7 +19,7 @@ const bookSchema = Schema(
     },
     status: {
       type: String,
-      default: 'Going to read',
+      // default: 'Going to read',
     },
     owner: {
       type: Schema.Types.ObjectId,
@@ -40,7 +40,7 @@ const addBookSchema = Joi.object({
   status: Joi.string(),
 });
 const updateResumeSchema = Joi.object({
-  resume: Joi.array().required(),
+  resume: Joi.string().required(),
 });
 const bookSchemas = {
   add: addBookSchema,

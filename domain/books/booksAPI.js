@@ -28,10 +28,10 @@ router.get('/library', validationToken, ctrlWrapper(ctrl.getLibrary));
 
 // router.get('/current', validationToken, ctrlWrapper(ctrl.current));
 
-// router.get('/logout', validationToken, ctrlWrapper(ctrl.logout));
+router.delete('/:id', validationToken, ctrlWrapper(ctrl.deliteBook));
 
 router.patch(
-  ':id/resume',
+  '/:id/resume',
   validationToken,
   validation(bookSchemas.resume),
   ctrlWrapper(ctrl.addResume)
