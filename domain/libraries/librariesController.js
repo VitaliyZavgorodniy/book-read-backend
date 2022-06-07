@@ -10,6 +10,12 @@ class librariesController {
 
     res.status(200).json({ status: 200, message: 'ok' });
   };
+
+  getLibrary = async (req, res) => {
+    const result = await service.findSortedLibrary({ owner: req.user._id });
+
+    res.status(200).json({ status: 200, message: 'ok', result });
+  };
 }
 
 module.exports = librariesController;

@@ -10,13 +10,17 @@ class librariesService {
   });
 
   findSortedLibrary = asyncHandler(async (parameter) => {
-    const { books } = await Library.findOne(parameter, '-createdAt -updatedAt');
+    const result = await Library.findOne(parameter, '-createdAt -updatedAt');
+
+    if (!result) return { total: 0, pending: [], reading: [], completed: [] };
+
+    const { books } = result;
 
     const pending = books.filter((book) => book.status === 'pending');
     const reading = books.filter((book) => book.status === 'reading');
     const completed = books.filter((book) => book.status === 'completed');
 
-    return { pending, reading, completed };
+    return { total: books?.length, pending, reading, completed };
   });
 
   addBookToLibrary = asyncHandler(async (book, user) => {
