@@ -5,11 +5,7 @@ const { bookSchemas } = require('./booksModel');
 const BooksController = require('./booksController');
 
 const { ctrlWrapper } = require('../../helpers');
-const {
-  validationToken,
-  validation,
-  validationId,
-} = require('../../middlewares');
+const { validationToken, validation } = require('../../middlewares');
 
 const ctrl = new BooksController();
 
