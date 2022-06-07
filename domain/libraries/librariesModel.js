@@ -2,7 +2,11 @@ const { Schema, model } = require('mongoose');
 const Joi = require('joi');
 
 const bookSchema = Schema({
-  _id: ObjectId,
+  _id: {
+    type: Schema.Types.ObjectId,
+    ref: 'book',
+    require: [true, 'Set book ID'],
+  },
   title: String,
   author: String,
   year: Number,
@@ -12,14 +16,18 @@ const bookSchema = Schema({
 
 const librarySchema = Schema(
   {
-    owner: String,
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: 'user',
+      require: [true, 'Set owner for library'],
+    },
     books: [bookSchema],
   },
   { versionKey: false, timestamps: true }
 );
 
 const createSchema = Joi.object({
-  id: Joi.string(),
+  id: Joi.string(), // remove
   title: Joi.string().required(),
   author: Joi.string().required(),
   year: Joi.number().required(),
@@ -35,6 +43,6 @@ const librarySchemas = {
   removeBook: removeBookFromLibSchema,
 };
 
-const Library = model('book', librarySchema);
+const Library = model('library', librarySchema);
 
 module.exports = { Library, librarySchemas };

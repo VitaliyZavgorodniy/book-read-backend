@@ -6,6 +6,12 @@ const queryString = require('query-string');
 const axios = require('axios');
 
 const { Book } = require('./booksModel');
+const { Library } = require('../libraries/librariesModel');
+
+const { librariesController } = require('../libraries/librariesController');
+const librariesService = require('../libraries/librariesService');
+
+const libService = new librariesService();
 
 class booksService {
   findBook = asyncHandler(async (parameter) => {
@@ -17,21 +23,21 @@ class booksService {
   createBook = asyncHandler(async (book, user) => {
     const foundBook = await this.findBook({ _id: book.id });
 
-    let newBook = null;
+    if (foundBook) {
+      const result = await libService.addBookToLibrary(foundBook, user);
+
+      return result;
+    }
 
     if (!foundBook) {
       const { title, author, year, pages } = book;
 
       const createdBook = await Book.create({ title, author, year, pages });
 
-      newBook = createdBook;
+      const result = await libService.addBookToLibrary(createdBook, user);
+
+      return result;
     }
-
-    console.log({ newBook });
-
-    // added book in library
-
-    console.log({ foundBook });
   });
 }
 

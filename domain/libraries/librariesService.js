@@ -1,37 +1,68 @@
 const asyncHandler = require('express-async-handler');
-const createError = require('http-errors');
-const { NotFound } = require('http-errors');
-const bcrypt = require('bcryptjs');
-const queryString = require('query-string');
-const axios = require('axios');
 
-const { Library } = require('./libraryModel');
+const { Library } = require('./librariesModel');
 
 class librariesService {
-  findBook = asyncHandler(async (parameter) => {
-    const result = await Book.findOne(parameter, '-createdAt -updatedAt');
+  findLibrary = asyncHandler(async (parameter) => {
+    const result = await Library.findOne(parameter, '-createdAt -updatedAt');
 
-    return result ?? null;
+    return result;
   });
 
-  createBook = asyncHandler(async (book, user) => {
-    const foundBook = await this.findBook({ _id: book.id });
+  findSortedLibrary = asyncHandler(async (parameter) => {
+    const { books } = await Library.findOne(parameter, '-createdAt -updatedAt');
 
-    let newBook = null;
+    const pending = books.filter((book) => book.status === 'pending');
+    const reading = books.filter((book) => book.status === 'reading');
+    const completed = books.filter((book) => book.status === 'completed');
 
-    if (!foundBook) {
-      const { title, author, year, pages } = book;
+    return { pending, reading, completed };
+  });
 
-      const createdBook = await Book.create({ title, author, year, pages });
+  addBookToLibrary = asyncHandler(async (book, user) => {
+    const foundLibrary = await this.findLibrary({ owner: user._id });
 
-      newBook = createdBook;
+    const inserBook = {
+      _id: book._id,
+      title: book.title,
+      author: book.author,
+      year: book.year,
+      pages: book.pages,
+      status: 'pending',
+    };
+
+    if (foundLibrary) {
+      await Library.findOneAndUpdate(
+        {
+          _id: foundLibrary._id,
+        },
+        { $push: { books: [inserBook] } }
+      );
     }
 
-    console.log({ newBook });
+    if (!foundLibrary) {
+      await Library.create({
+        owner: user._id,
+        books: [inserBook],
+      });
+    }
 
-    // added book in library
+    const result = await this.findSortedLibrary({ owner: user._id });
 
-    console.log({ foundBook });
+    return result;
+  });
+
+  updateBookStatus = asyncHandler(async (status, bookID, user) => {
+    const updatedLibrary = await Library.findOneAndUpdate(
+      { owner: user._id, 'books._id': bookID },
+      {
+        $set: {
+          'books.$.status': status,
+        },
+      }
+    );
+
+    return updatedLibrary;
   });
 }
 

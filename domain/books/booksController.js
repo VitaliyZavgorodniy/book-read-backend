@@ -4,10 +4,15 @@ const service = new booksService();
 
 class booksController {
   createBook = async (req, res) => {
-    console.log({ user: req.user, book: req.body });
-    await service.createBook(req.body);
+    const result = await service.createBook(req.body, req.user);
+    // result list library
+    res.status(200).json({ status: 200, message: 'ok', result });
+  };
 
-    res.status(200).json({ status: 200, message: 'ok' });
+  addReview = async (req, res) => {
+    const result = await service.addReview(req.body, req.user);
+
+    res.status(200).json({ status: 200, message: 'ok', result });
   };
 }
 
