@@ -2,35 +2,18 @@ const express = require('express');
 const router = express.Router();
 
 const { bookSchemas } = require('./booksModel');
-const BooksController = require('./booksController');
+const booksController = require('./booksController');
 
 const { ctrlWrapper } = require('../../helpers');
-const { validationToken, validation } = require('../../middlewares');
+const { validation, validationToken } = require('../../middlewares');
 
-const ctrl = new BooksController();
+const ctrl = new booksController();
 
 router.post(
   '/',
   validationToken,
-  validation(bookSchemas.add),
-  ctrlWrapper(ctrl.addBook)
-);
-
-router.get('/library', validationToken, ctrlWrapper(ctrl.getLibrary));
-
-// router.patch('/login', validation(userSchemas.login), ctrlWrapper(ctrl.login));
-
-// router.get('/login/google-redirect', ctrlWrapper(ctrl.loginGoogleRedirect));
-
-// router.get('/current', validationToken, ctrlWrapper(ctrl.current));
-
-router.delete('/:id', validationToken, ctrlWrapper(ctrl.deliteBook));
-
-router.patch(
-  '/:id/resume',
-  validationToken,
-  validation(bookSchemas.resume),
-  ctrlWrapper(ctrl.addResume)
+  validation(bookSchemas.create),
+  ctrlWrapper(ctrl.createBook)
 );
 
 module.exports = router;

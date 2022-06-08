@@ -3,40 +3,17 @@ const booksService = require('./booksService');
 const service = new booksService();
 
 class booksController {
-  addBook = async (req, res) => {
-    const result = await service.addBook(req, res);
-    res.json(result);
+  createBook = async (req, res) => {
+    const result = await service.createBook(req.body, req.user);
+    // result list library
+    res.status(200).json({ status: 200, message: 'ok', result });
   };
-  getLibrary = async (req, res) => {
-    const result = await service.findBooks(req.body);
-    res.json({
-      status: 'success',
-      code: 201,
-      message: 'Created successfully',
-      data: {
-        result,
-      },
-    });
-  };
-  addResume = async (req, res) => {
-    const id = req.params;
-    const resume = req.body;
-    const result = await service.addResume({ id, resume });
-    res.json({
-      status: 'success',
-      code: 200,
-      message: 'Created successfully',
-      data: { result },
-    });
-  };
-  deliteBook = async (req, res) => {
-    const { id } = req.params;
-    const delitedBook = await service.deliteBook(id);
-    res.json({
-      status: 'success',
-      code: 200,
-      message: 'Delited successfully',
-    });
+
+  addReview = async (req, res) => {
+    const result = await service.addReview(req.body, req.user);
+
+    res.status(200).json({ status: 200, message: 'ok', result });
   };
 }
+
 module.exports = booksController;

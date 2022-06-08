@@ -5,9 +5,13 @@ const bcrypt = require('bcryptjs');
 const queryString = require('query-string');
 const axios = require('axios');
 
-const { jwtGenerator } = require('../../helpers');
-
 const { Book } = require('./booksModel');
+const { Library } = require('../libraries/librariesModel');
+
+const { librariesController } = require('../libraries/librariesController');
+const librariesService = require('../libraries/librariesService');
+
+const libService = new librariesService();
 
 class booksService {
   findBook = asyncHandler(async (parameter) => {
@@ -16,38 +20,25 @@ class booksService {
     return result ?? null;
   });
 
-  addBook = asyncHandler(async (req, res) => {
-    const { title } = req.params;
-    const result = await this.findBook({ title });
+  createBook = asyncHandler(async (book, user) => {
+    const foundBook = await this.findBook({ _id: book.id });
 
-    if (result) {
-      throw createError(409, 'Book exist');
+    if (foundBook) {
+      const result = await libService.addBookToLibrary(foundBook, user);
+
+      return result;
     }
-    const { _id } = req.user;
-    const book = await Book.create({ ...req.body, owner: _id });
-    return book;
-  });
-  findBooks = asyncHandler(async (owner) => {
-    const result = await Book.find(owner, '-createdAt -updatedAt').populate(
-      'owner',
-      'email'
-    );
-    return result ?? null;
-  });
-  deliteBook = asyncHandler(async (id) => {
-    const result = await Book.findByIdAndDelete(id);
-  });
-  addResume = asyncHandler(async ({ id, resume }) => {
-    const result = await Book.findOneAndUpdate({ id }, resume, {
-      new: true,
-    });
-    if (!result) {
-      throw createError(409, 'Book not exist');
+
+    if (!foundBook) {
+      const { title, author, year, pages } = book;
+
+      const createdBook = await Book.create({ title, author, year, pages });
+
+      const result = await libService.addBookToLibrary(createdBook, user);
+
+      return result;
     }
-    console.log(result);
-    return result;
   });
 }
+
 module.exports = booksService;
-
-

@@ -14,6 +14,7 @@
   "tags": [
     { "name": "Users", "description": "Authorization and login endpoints" },
     { "name": "Books", "description": "Books manipulation endpoints" },
+    { "name": "Library", "description": "Books manipulation endpoints" },
     { "name": "Trainings", "description": "Training manipulation endpoints" }
   ],
   "paths": {
@@ -123,11 +124,13 @@
         }
       }
     },
-    "/": {
+
+    "/books": {
       "post": {
         "tags": ["Books"],
-        "summary": "Add books",
+        "summary": "Add book to Library",
         "parameters": [],
+        "security": [{ "Bearer": [] }],
 
         "requestBody": {
           "description": "Object",
@@ -135,7 +138,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/AddRequest"
+                "$ref": "#/components/schemas/BookPostRequest"
               }
             }
           }
@@ -147,7 +150,29 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AddResponse"
+                  "$ref": "#/components/schemas/LibraryGetResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/library": {
+      "get": {
+        "tags": ["Library"],
+        "summary": "Sorted user's library",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LibraryGetResponse"
                 }
               }
             }
@@ -273,33 +298,35 @@
           }
         }
       },
-      "AddRequest": {
+
+      "BookPostRequest": {
         "type": "object",
-        "required": ["title", "author", "pages", "year"],
+        "required": ["title", "author", "year", "pages"],
         "properties": {
           "title": {
             "type": "string",
-            "description": "Book's title",
-            "example": "Title"
+            "example": "Harry Potter and Philosopher's Stone"
           },
           "author": {
             "type": "string",
-            "description": "Book's author",
-            "example": "Name"
-          },
-          "pages": {
-            "type": "string",
-            "description": "Book's pages quantity",
-            "example": "555"
+            "example": "Johanna Rowling"
           },
           "year": {
+            "type": "number",
+            "example": 2001
+          },
+          "pages": {
+            "type": "number",
+            "example": 213
+          },
+          "id": {
             "type": "string",
-            "description": "Book's year of publication",
-            "example": "1999"
+            "example": "629f26212b357500ea392251"
           }
         }
       },
-      "AddResponse": {
+
+      "LibraryGetResponse": {
         "type": "object",
         "properties": {
           "status": {
@@ -309,6 +336,111 @@
           "message": {
             "type": "string",
             "example": "ok"
+          },
+          "result": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "number",
+                "example": 9
+              },
+              "pending": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string",
+                      "example": "629f2e0b7ed67c895b4ee378"
+                    },
+                    "title": {
+                      "type": "string",
+                      "example": "Harry Potter and Philosopher's Stone"
+                    },
+                    "author": {
+                      "type": "string",
+                      "example": "Johanna Rowling"
+                    },
+                    "year": {
+                      "type": "number",
+                      "example": 2001
+                    },
+                    "pages": {
+                      "type": "number",
+                      "example": 213
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "pending"
+                    }
+                  }
+                }
+              },
+              "reading": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string",
+                      "example": "629f2e0b7ed67c895b4ee378"
+                    },
+                    "title": {
+                      "type": "string",
+                      "example": "Harry Potter and Philosopher's Stone"
+                    },
+                    "author": {
+                      "type": "string",
+                      "example": "Johanna Rowling"
+                    },
+                    "year": {
+                      "type": "number",
+                      "example": 2001
+                    },
+                    "pages": {
+                      "type": "number",
+                      "example": 213
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "reading"
+                    }
+                  }
+                }
+              },
+              "completed": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string",
+                      "example": "629f2e0b7ed67c895b4ee378"
+                    },
+                    "title": {
+                      "type": "string",
+                      "example": "Harry Potter and Philosopher's Stone"
+                    },
+                    "author": {
+                      "type": "string",
+                      "example": "Johanna Rowling"
+                    },
+                    "year": {
+                      "type": "number",
+                      "example": 2001
+                    },
+                    "pages": {
+                      "type": "number",
+                      "example": 213
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "completed"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }

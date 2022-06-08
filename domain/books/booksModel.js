@@ -1,50 +1,42 @@
 const { Schema, model } = require('mongoose');
 const Joi = require('joi');
-// const { array } = require('joi');
+
+const reviewSchema = Schema({
+  rating: Number,
+  text: String,
+  owner: {
+    type: Schema.Types.ObjectId,
+    ref: 'user',
+    require: [true, 'Set owner for review'],
+  },
+});
 
 const bookSchema = Schema(
   {
-    title: {
-      type: String,
-    },
-    author: {
-      type: String,
-    },
-    pages: {
-      type: Number,
-    },
-    year: {
-      type: Number,
-      min: 4,
-    },
-    status: {
-      type: String,
-      // default: 'Going to read',
-    },
-    owner: {
-      type: Schema.Types.ObjectId,
-      ref: 'user',
-    },
-    resume: {
-      type: String,
-    },
+    id: String,
+    title: String,
+    author: String,
+    year: Number,
+    pages: Number,
+    reviews: [reviewSchema],
   },
   { versionKey: false, timestamps: true }
 );
 
-const addBookSchema = Joi.object({
+const createSchema = Joi.object({
+  id: Joi.string(),
   title: Joi.string().required(),
   author: Joi.string().required(),
-  pages: Joi.string().required(),
-  year: Joi.string().min(4).required(),
-  status: Joi.string(),
+  year: Joi.number().required(),
+  pages: Joi.number().required(),
 });
-const updateResumeSchema = Joi.object({
-  resume: Joi.string().required(),
-});
+
+// const addReview = Joi.object({
+//   id: Object,
+// });
+
 const bookSchemas = {
-  add: addBookSchema,
-  resume: updateResumeSchema,
+  create: createSchema,
 };
 
 const Book = model('book', bookSchema);

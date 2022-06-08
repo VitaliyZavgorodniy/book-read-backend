@@ -60,7 +60,7 @@ class usersService {
   loginUserGoogle = asyncHandler(async () => {
     const params = queryString.stringify({
       client_id: GOOGLE_CLIENT,
-      redirect_uri: `${BASE_URL}/api/users/login/google-redirect`,
+      redirect_uri: `${BASE_URL}/api/login/google-redirect`,
       scope: [
         'https://www.googleapis.com/auth/userinfo.email',
         'https://www.googleapis.com/auth/userinfo.profile',
@@ -83,7 +83,7 @@ class usersService {
       data: {
         client_id: GOOGLE_CLIENT,
         client_secret: GOOGLE_SECRET,
-        redirect_uri: `${BASE_URL}/api/users/login/google-redirect`,
+        redirect_uri: `${BASE_URL}/api/login/google-redirect`,
         grant_type: 'authorization_code',
         code,
       },
@@ -102,7 +102,7 @@ class usersService {
     if (user) {
       const token = await this.userTokenUpdate(user._id);
 
-      return `${FRONTEND_URL}?token=${token}`;
+      return `${FRONTEND_URL}/login/${token}`;
     }
 
     const avatar = userData.picture ?? null;
