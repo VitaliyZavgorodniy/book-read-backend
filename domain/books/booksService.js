@@ -1,14 +1,7 @@
 const asyncHandler = require('express-async-handler');
-const createError = require('http-errors');
-const { NotFound } = require('http-errors');
-const bcrypt = require('bcryptjs');
-const queryString = require('query-string');
-const axios = require('axios');
 
 const { Book } = require('./booksModel');
-const { Library } = require('../libraries/librariesModel');
 
-const { librariesController } = require('../libraries/librariesController');
 const librariesService = require('../libraries/librariesService');
 
 const libService = new librariesService();
@@ -18,6 +11,12 @@ class booksService {
     const result = await Book.findOne(parameter, '-createdAt -updatedAt');
 
     return result ?? null;
+  });
+
+  findBooksById = asyncHandler(async (IDarray) => {
+    const result = await Book.find({ _id: IDarray });
+
+    return result;
   });
 
   createBook = asyncHandler(async (book, user) => {

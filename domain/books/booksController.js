@@ -5,7 +5,7 @@ const service = new booksService();
 class booksController {
   createBook = async (req, res) => {
     const result = await service.createBook(req.body, req.user);
-    // result list library
+
     res.status(200).json({ status: 200, message: 'ok', result });
   };
 
