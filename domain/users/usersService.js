@@ -115,7 +115,7 @@ class usersService {
 
     const token = await this.userTokenUpdate(newUser._id);
 
-    return `${FRONTEND_URL}?token=${token}`;
+    return `${FRONTEND_URL}/login/google?token=${token}`;
   });
 
   userTokenUpdate = asyncHandler(async (id) => {
