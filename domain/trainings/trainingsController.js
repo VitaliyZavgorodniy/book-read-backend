@@ -11,6 +11,12 @@ class trainingsController {
     res.status(200).json({ status: 200, message: 'ok', result });
   };
 
+  find = async (req, res) => {
+    const result = await service.getTraining(req.user);
+
+    res.status(200).json({ status: 200, message: 'ok', result });
+  };
+
   addReadPages = async (req, res) => {
     const result = await service.addReadPagesToStat(req.body, req.user);
 

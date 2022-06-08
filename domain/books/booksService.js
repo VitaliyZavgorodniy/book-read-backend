@@ -20,7 +20,7 @@ class booksService {
   });
 
   createBook = asyncHandler(async (book, user) => {
-    const foundBook = await this.findBook({ _id: book.id });
+    const foundBook = await Book.findById(book.id);
 
     if (foundBook) {
       const result = await libService.addBookToLibrary(foundBook, user);

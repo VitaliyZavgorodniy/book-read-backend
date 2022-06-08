@@ -25,14 +25,14 @@ const bookSchema = Schema(
 
 const createSchema = Joi.object({
   id: Joi.string(),
-  title: Joi.string().required(),
-  author: Joi.string().required(),
-  year: Joi.number().required(),
-  pages: Joi.number().required(),
+  title: Joi.string(),
+  author: Joi.string(),
+  year: Joi.number(),
+  pages: Joi.number(),
 });
 
 const addReview = Joi.object({
-  id: Object,
+  id: String,
 });
 
 const bookSchemas = {

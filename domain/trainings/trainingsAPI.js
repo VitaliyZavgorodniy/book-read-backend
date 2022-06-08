@@ -16,6 +16,8 @@ router.post(
   ctrlWrapper(ctrl.create)
 );
 
+router.get('/', validationToken, ctrlWrapper(ctrl.find));
+
 router.post(
   '/add-pages',
   validationToken,
