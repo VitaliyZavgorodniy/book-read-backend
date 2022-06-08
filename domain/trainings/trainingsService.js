@@ -90,15 +90,16 @@ class trainingsService {
 
     foundTraining.books.forEach(async (book) => {
       if (book.pages <= book.pagesRead) {
-        await libServ.updateBookStatus('completed', book._id, user);
+        console.log({ isTrue: book.pages <= book.pagesRead });
         await this.updateTrainingBookStatus('completed', book._id, user);
+        await libServ.updateBookStatus('completed', book._id, user);
       }
     });
 
-    const checkTraining = await Training.findOne({ owner: user._id });
-
-    console.log({ books: checkTraining.books });
-    // bug
+    const checkTraining = await Training.findOne({
+      owner: user._id,
+      _id: foundTraining._id,
+    });
 
     const readingBooks = checkTraining.books.filter(
       (book) => book.status !== 'completed'
