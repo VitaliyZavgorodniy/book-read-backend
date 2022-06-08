@@ -1,6 +1,8 @@
 const asyncHandler = require('express-async-handler');
+const createError = require('http-errors');
 
 const { Library } = require('./librariesModel');
+const { Book } = require('../books/booksModel');
 
 class librariesService {
   findLibrary = asyncHandler(async (parameter) => {
@@ -24,9 +26,7 @@ class librariesService {
   });
 
   addBookToLibrary = asyncHandler(async (book, user) => {
-    const foundLibrary = await this.findLibrary({ owner: user._id });
-
-    const inserBook = {
+    const insertingBook = {
       _id: book._id,
       title: book.title,
       author: book.author,
@@ -35,20 +35,28 @@ class librariesService {
       status: 'pending',
     };
 
-    if (foundLibrary) {
-      await Library.findOneAndUpdate(
-        {
-          _id: foundLibrary._id,
-        },
-        { $push: { books: [inserBook] } }
-      );
-    }
+    const foundLibrary = await Library.findOne({ owner: user._id });
 
     if (!foundLibrary) {
       await Library.create({
         owner: user._id,
-        books: [inserBook],
+        books: [insertingBook],
       });
+    }
+
+    if (foundLibrary) {
+      const searchBookInLibrary = await Library.findOne({
+        owner: user._id,
+        'books._id': book._id,
+      });
+
+      if (searchBookInLibrary)
+        throw createError(401, 'Book is already in library');
+
+      await Library.findOneAndUpdate(
+        { owner: user._id },
+        { $push: { books: [insertingBook] } }
+      );
     }
 
     const result = await this.findSortedLibrary({ owner: user._id });
