@@ -102,7 +102,7 @@ class usersService {
     if (user) {
       const token = await this.userTokenUpdate(user._id);
 
-      return `${FRONTEND_URL}/login/${token}`;
+      return `${FRONTEND_URL}/login/google?token=${token}`;
     }
 
     const avatar = userData.picture ?? null;
