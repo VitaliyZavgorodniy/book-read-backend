@@ -3,6 +3,10 @@ const createError = require('http-errors');
 
 const { Library } = require('./librariesModel');
 
+const booksService = require('../books/booksService');
+
+const booksServ = new booksService();
+
 class librariesService {
   findLibrary = asyncHandler(async (parameter) => {
     const result = await Library.findOne(parameter, '-createdAt -updatedAt');
