@@ -22,8 +22,10 @@ const statsSchema = Schema({
 
 const trainingSchema = Schema({
   books: [bookSchema],
+  startDate: String,
   endDate: String,
   inProgress: Boolean,
+  pagesAmount: Number,
   stats: [statsSchema],
   owner: {
     type: Schema.Types.ObjectId,
@@ -33,6 +35,7 @@ const trainingSchema = Schema({
 });
 
 const createTrainingSchema = Joi.object({
+  startDate: Joi.string().required(),
   endDate: Joi.string().required(),
   books: Joi.array().min(1).items(Joi.string().required()).required(),
 });

@@ -18,8 +18,8 @@ class trainingsService {
   createTraining = asyncHandler(async (training, user) => {
     const foundTraining = await this.findTraining({ owner: user._id });
 
-    if (foundTraining?.inProgress)
-      throw createError(401, 'Training is already started');
+    // if (foundTraining?.inProgress)
+    //   throw createError(401, 'Training is already started');
 
     const booksArray = await Book.find({ _id: training.books });
 
@@ -27,16 +27,22 @@ class trainingsService {
       throw createError(401, 'Books for training was not found');
 
     const booksList = booksArray.map((book) => ({
-      ...book,
+      ...book._doc,
       pagesRead: 0,
       status: 'reading',
     }));
 
+    const pagesAmount = booksList
+      .map((item) => item.pages)
+      .reduce((acc, value) => acc + Number(value), 0);
+
     const newTraining = {
+      startDate: training.startDate,
       endDate: training.endDate,
       inProgress: true,
       owner: user._id,
       books: booksList,
+      pagesAmount,
       stats: [],
     };
 
@@ -45,7 +51,7 @@ class trainingsService {
     if (foundTraining && !foundTraining.inProgress)
       await Training.findOneAndUpdate({ owner: user._id }, newTraining);
 
-    const result = await Training.findOne({ owner: user._id });
+    const result = await this.getTraining(user);
 
     result.books.forEach(async (book) => {
       await libServ.updateBookStatus('reading', book._id, user);
@@ -90,7 +96,6 @@ class trainingsService {
 
     foundTraining.books.forEach(async (book) => {
       if (book.pages <= book.pagesRead) {
-        console.log({ isTrue: book.pages <= book.pagesRead });
         await this.updateTrainingBookStatus('completed', book._id, user);
         await libServ.updateBookStatus('completed', book._id, user);
       }
@@ -111,7 +116,7 @@ class trainingsService {
         { inProgress: false }
       );
 
-    const resultTraining = await Training.findOne({ owner: user._id });
+    const resultTraining = await this.getTraining(user);
 
     return resultTraining;
   });
@@ -129,6 +134,8 @@ class trainingsService {
 
   getTraining = asyncHandler(async (user) => {
     const training = await Training.findOne({ owner: user._id });
+
+    if (!training) throw createError(500, 'Training was not found!');
 
     return training;
   });

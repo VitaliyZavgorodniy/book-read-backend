@@ -9,6 +9,12 @@ class booksController {
     res.status(200).json({ status: 200, message: 'ok', result });
   };
 
+  searchBooks = async (req, res) => {
+    const result = await service.searchBooks(req.body.query);
+
+    res.status(200).json({ status: 200, message: 'ok', result });
+  };
+
   addReview = async (req, res) => {
     const result = await service.addReview(req.body, req.user);
 

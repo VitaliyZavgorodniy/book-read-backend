@@ -10,6 +10,13 @@ const { validation, validationToken } = require('../../middlewares');
 const ctrl = new booksController();
 
 router.post(
+  '/search',
+  validationToken,
+  validation(bookSchemas.searchBook),
+  ctrlWrapper(ctrl.searchBooks)
+);
+
+router.post(
   '/',
   validationToken,
   validation(bookSchemas.create),

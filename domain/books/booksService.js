@@ -19,6 +19,14 @@ class booksService {
     return result;
   });
 
+  searchBooks = asyncHandler(async (query) => {
+    const result = await Book.find({
+      title: { $regex: query, $options: 'i' },
+    }).limit(5);
+
+    return result;
+  });
+
   createBook = asyncHandler(async (book, user) => {
     const foundBook = await Book.findById(book.id);
 

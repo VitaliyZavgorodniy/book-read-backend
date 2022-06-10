@@ -32,11 +32,16 @@ const createSchema = Joi.object({
 });
 
 const addReview = Joi.object({
-  id: String,
+  id: Joi.string().required(),
+});
+
+const searchBookSchema = Joi.object({
+  query: Joi.string().required().min(3),
 });
 
 const bookSchemas = {
   create: createSchema,
+  searchBook: searchBookSchema,
 };
 
 const Book = model('book', bookSchema);
