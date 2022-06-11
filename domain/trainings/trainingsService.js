@@ -12,14 +12,25 @@ class trainingsService {
   findTraining = asyncHandler(async (parameter) => {
     const result = await Training.findOne(parameter, '-createdAt -updatedAt');
 
+    if (!result) throw createError(500, 'Training was not found!');
+
     return result;
   });
 
-  createTraining = asyncHandler(async (training, user) => {
-    const foundTraining = await this.findTraining({ owner: user._id });
+  getTraining = asyncHandler(async (userID) => {
+    const training = await Training.findOne(
+      { owner: userID },
+      '-createdAt -updatedAt'
+    );
 
-    // if (foundTraining?.inProgress)
-    //   throw createError(401, 'Training is already started');
+    return training;
+  });
+
+  createTraining = asyncHandler(async (training, user) => {
+    const foundTraining = await this.getTraining(user._id);
+
+    if (foundTraining?.inProgress)
+      throw createError(401, 'Training is already started');
 
     const booksArray = await Book.find({ _id: training.books });
 
@@ -28,8 +39,6 @@ class trainingsService {
 
     const booksList = booksArray.map((book) => ({
       ...book._doc,
-      pagesRead: 0,
-      status: 'reading',
     }));
 
     const pagesAmount = booksList
@@ -48,38 +57,29 @@ class trainingsService {
 
     if (!foundTraining) await Training.create(newTraining);
 
-    if (foundTraining && !foundTraining.inProgress)
+    if (foundTraining)
       await Training.findOneAndUpdate({ owner: user._id }, newTraining);
 
-    const result = await this.getTraining(user);
+    const result = await this.getTraining(user._id);
 
     result.books.forEach(async (book) => {
-      await libServ.updateBookStatus('reading', book._id, user);
+      await libServ.updateBookStatus('reading', book.id, user);
     });
 
     return result;
   });
 
   addReadPagesToStat = asyncHandler(async (stat, user) => {
-    const foundTraining = await Training.findOne({ owner: user._id });
+    const foundTraining = await this.getTraining(user._id);
 
     if (!foundTraining) throw createError(401, 'Training was not found');
 
     await Training.findOneAndUpdate(
-      { owner: user._id },
+      { owner: user._id, 'books._id': stat.bookId },
       {
         $push: {
           stats: stat,
         },
-      }
-    );
-
-    await Training.findOneAndUpdate(
-      {
-        owner: user._id,
-        'books._id': stat.bookId,
-      },
-      {
         $inc: {
           'books.$.pagesRead': stat.pages,
         },
@@ -92,52 +92,49 @@ class trainingsService {
   });
 
   handleTrainingEnd = asyncHandler(async (user) => {
-    const foundTraining = await Training.findOne({ owner: user._id });
+    const { books: booksList } = await this.getTraining(user._id);
 
-    foundTraining.books.forEach(async (book) => {
-      if (book.pages <= book.pagesRead) {
-        await this.updateTrainingBookStatus('completed', book._id, user);
-        await libServ.updateBookStatus('completed', book._id, user);
+    booksList.forEach(async ({ _id, pages, pagesRead, isCompleted }) => {
+      if (pages <= pagesRead && !isCompleted) {
+        libServ.updateBookStatus('completed', _id, user);
+
+        const { books } = await Training.findOneAndUpdate(
+          { owner: user._id, 'books._id': _id },
+          {
+            $set: {
+              'books.$.isCompleted': true,
+            },
+          },
+          {
+            new: true,
+          }
+        );
+
+        const filteredBooks = books.filter(({ isCompleted }) => !isCompleted);
+
+        if (filteredBooks.length === 0) {
+          await Training.findOneAndUpdate(
+            { owner: user._id },
+            { inProgress: false }
+          );
+        }
       }
     });
 
-    const checkTraining = await Training.findOne({
-      owner: user._id,
-      _id: foundTraining._id,
-    });
+    const result = await this.getTraining(user._id);
 
-    const readingBooks = checkTraining.books.filter(
-      (book) => book.status !== 'completed'
-    );
-
-    if (readingBooks.length === 0)
-      await Training.findOneAndUpdate(
-        { owner: user._id },
-        { inProgress: false }
-      );
-
-    const resultTraining = await this.getTraining(user);
-
-    return resultTraining;
+    return result;
   });
 
   updateTrainingBookStatus = asyncHandler(async (status, bookID, user) => {
     await Training.findOneAndUpdate(
-      { owner: user._id, 'books._id': bookID },
+      { owner: user._id, 'books.id': bookID },
       {
         $set: {
           'books.$.status': status,
         },
       }
     );
-  });
-
-  getTraining = asyncHandler(async (user) => {
-    const training = await Training.findOne({ owner: user._id });
-
-    if (!training) throw createError(500, 'Training was not found!');
-
-    return training;
   });
 }
 

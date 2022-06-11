@@ -1,18 +1,17 @@
-const { Schema, model } = require('mongoose');
+const { Schema, model, ObjectId } = require('mongoose');
 const Joi = require('joi');
 
 const bookSchema = Schema({
   _id: {
-    type: Schema.Types.ObjectId,
+    type: ObjectId,
     ref: 'book',
-    require: [true, 'Set book ID'],
   },
   title: String,
   author: String,
   year: Number,
   pages: Number,
-  pagesRead: Number,
-  status: String,
+  pagesRead: { type: Number, default: 0 },
+  isCompleted: { type: Boolean, default: false },
 });
 
 const statsSchema = Schema({
