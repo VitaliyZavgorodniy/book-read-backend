@@ -12,6 +12,15 @@ const bookSchema = Schema({
   year: Number,
   pages: Number,
   status: String,
+  review: {
+    type: {
+      id: Schema.Types.ObjectId,
+      rating: Number,
+      text: String,
+    },
+
+    default: null,
+  },
 });
 
 const librarySchema = Schema(
@@ -21,7 +30,7 @@ const librarySchema = Schema(
       ref: 'user',
       require: [true, 'Set owner for library'],
     },
-    books: [bookSchema],
+    books: { type: [bookSchema], default: [] },
   },
   { versionKey: false, timestamps: true }
 );

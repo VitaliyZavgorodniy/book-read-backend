@@ -10,7 +10,10 @@ class librariesController {
   };
 
   getLibrary = async (req, res) => {
-    const result = await service.findSortedLibrary({ owner: req.user._id });
+    const result = await service.findSortedLibrary(
+      { owner: req.user._id },
+      req.user
+    );
 
     res.status(200).json({ status: 200, message: 'ok', result });
   };

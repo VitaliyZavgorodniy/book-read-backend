@@ -31,17 +31,32 @@ const createSchema = Joi.object({
   pages: Joi.number(),
 });
 
-const addReview = Joi.object({
-  id: Joi.string().required(),
-});
-
 const searchBookSchema = Joi.object({
   query: Joi.string().required().min(3),
+});
+
+const addReviewSchema = Joi.object({
+  review: Joi.object({
+    rating: Joi.number().required().max(5).min(1),
+    text: Joi.string().required().min(1),
+  }),
+  bookID: Joi.string().required(),
+});
+
+const updateReviewSchema = Joi.object({
+  review: Joi.object({
+    id: Joi.string().required(),
+    rating: Joi.number().required().max(5).min(1),
+    text: Joi.string().required().min(1),
+  }),
+  bookID: Joi.string().required(),
 });
 
 const bookSchemas = {
   create: createSchema,
   searchBook: searchBookSchema,
+  addReview: addReviewSchema,
+  updateReview: updateReviewSchema,
 };
 
 const Book = model('book', bookSchema);

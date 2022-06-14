@@ -23,4 +23,18 @@ router.post(
   ctrlWrapper(ctrl.createBook)
 );
 
+router.post(
+  '/add-review',
+  validationToken,
+  validation(bookSchemas.addReview),
+  ctrlWrapper(ctrl.addReview)
+);
+
+router.post(
+  '/update-review',
+  validationToken,
+  validation(bookSchemas.updateReview),
+  ctrlWrapper(ctrl.updateReview)
+);
+
 module.exports = router;

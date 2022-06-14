@@ -11,7 +11,7 @@ class librariesService {
     return result;
   });
 
-  findSortedLibrary = asyncHandler(async (parameter) => {
+  findSortedLibrary = asyncHandler(async (parameter, user) => {
     const result = await Library.findOne(parameter, '-createdAt -updatedAt');
 
     if (!result) return { total: 0, pending: [], reading: [], completed: [] };
@@ -59,7 +59,7 @@ class librariesService {
       );
     }
 
-    const result = await this.findSortedLibrary({ owner: user._id });
+    const result = await this.findSortedLibrary({ owner: user._id }, user);
 
     return result;
   });

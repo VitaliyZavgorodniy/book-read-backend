@@ -1,6 +1,7 @@
 const asyncHandler = require('express-async-handler');
 
 const { Book } = require('./booksModel');
+const { Library } = require('../libraries/librariesModel');
 
 const librariesService = require('../libraries/librariesService');
 
@@ -45,6 +46,47 @@ class booksService {
 
       return result;
     }
+  });
+
+  addReview = asyncHandler(async (data, userID) => {
+    const { review, bookID } = data;
+
+    const result = await Book.findByIdAndUpdate(
+      bookID,
+      {
+        $push: { reviews: [{ ...review, owner: userID }] },
+      },
+      { new: true }
+    );
+
+    await Library.findOneAndUpdate(
+      { owner: userID, 'books._id': bookID },
+      { $set: { 'books.$.review': review } }
+    );
+
+    return result;
+  });
+
+  updateReview = asyncHandler(async (data, userID) => {
+    const { review, bookID } = data;
+
+    const result = await Book.findOneAndUpdate(
+      { _id: bookID, 'reviews._id': review.id },
+      {
+        $set: {
+          'reviews.$.text': review.text,
+          'reviews.$.rating': review.rating,
+        },
+      },
+      { new: true }
+    );
+
+    await Library.findOneAndUpdate(
+      { owner: userID, 'books._id': bookID },
+      { $set: { 'books.$.review': review } }
+    );
+
+    return result;
   });
 }
 
