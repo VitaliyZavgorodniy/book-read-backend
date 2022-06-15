@@ -26,6 +26,12 @@ class booksController {
 
     res.status(200).json({ status: 200, message: 'ok', result });
   };
+
+  getReviews = async (req, res) => {
+    const result = await service.getReviews(req.user._id);
+
+    res.status(200).json({ status: 200, message: 'ok', result });
+  };
 }
 
 module.exports = booksController;

@@ -88,6 +88,30 @@ class booksService {
 
     return result;
   });
+
+  getReviews = asyncHandler(async (userID) => {
+    const booksList = await Book.find({
+      'reviews.0': { $exists: true },
+    }).populate({
+      path: 'reviews',
+      populate: {
+        path: 'owner',
+        select: '-_id -password -email -token -createdAt -updatedAt',
+      },
+    });
+
+    const { books } = await Library.findOne({ owner: userID });
+
+    const result = booksList.map((book) => {
+      if (books.some(({ title }) => title === book.title)) {
+        return { ...book._doc, isOwned: true };
+      }
+
+      return { ...book._doc, isOwned: false };
+    });
+
+    return result;
+  });
 }
 
 module.exports = booksService;

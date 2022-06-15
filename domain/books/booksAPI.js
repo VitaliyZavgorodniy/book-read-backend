@@ -37,4 +37,10 @@ router.post(
   ctrlWrapper(ctrl.updateReview)
 );
 
+router.get(
+  '/reviews',
+  validationToken,
+  ctrlWrapper(ctrl.getReviews)
+);
+
 module.exports = router;

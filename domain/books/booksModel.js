@@ -1,13 +1,12 @@
-const { Schema, model } = require('mongoose');
+const { Schema, model, ObjectId } = require('mongoose');
 const Joi = require('joi');
 
 const reviewSchema = Schema({
   rating: Number,
   text: String,
   owner: {
-    type: Schema.Types.ObjectId,
+    type: ObjectId,
     ref: 'user',
-    require: [true, 'Set owner for review'],
   },
 });
 
