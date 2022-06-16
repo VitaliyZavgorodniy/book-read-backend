@@ -71,7 +71,7 @@ class booksService {
     const { review, bookID } = data;
 
     const result = await Book.findOneAndUpdate(
-      { _id: bookID, 'reviews._id': review.id },
+      { _id: bookID, 'reviews.owner': userID },
       {
         $set: {
           'reviews.$.text': review.text,
