@@ -32,9 +32,9 @@ class usersController {
   };
 
   current = async (req, res) => {
-    const { name, avatarURL, email } = req.user;
+    const { name, avatarURL, email, isOnTraining } = req.user;
 
-    res.status(200).json({ name, avatarURL, email });
+    res.status(200).json({ name, avatarURL, email, isOnTraining });
   };
 
   logout = async (req, res) => {

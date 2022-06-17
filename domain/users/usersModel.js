@@ -24,6 +24,10 @@ const userSchema = Schema(
       type: String,
       default: null,
     },
+    isOnTraining: {
+      type: Boolean,
+      default: false,
+    },
   },
   { versionKey: false, timestamps: true }
 );

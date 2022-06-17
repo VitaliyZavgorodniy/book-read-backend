@@ -3,6 +3,7 @@ const createError = require('http-errors');
 
 const { Training } = require('./trainingsModel');
 const { Book } = require('../books/booksModel');
+const { User } = require('../users/usersModel');
 
 const librariesService = require('../libraries/librariesService');
 
@@ -66,6 +67,11 @@ class trainingsService {
       await libServ.updateBookStatus('reading', book.id, user);
     });
 
+    await User.findOneAndUpdate(
+      { _id: user._id },
+      { $set: { isOnTraining: true } }
+    );
+
     return result;
   });
 
@@ -116,6 +122,11 @@ class trainingsService {
           await Training.findOneAndUpdate(
             { owner: user._id },
             { inProgress: false }
+          );
+
+          await User.findOneAndUpdate(
+            { _id: user._id },
+            { $set: { isOnTraining: false } }
           );
         }
       }
