@@ -18,7 +18,7 @@ class librariesService {
 
     const { books } = result;
 
-    const pending = books.filter((book) => book.status === 'pending');
+    const pending = books.filter((book) => book.status === 'pending').reverse();
     const reading = books.filter((book) => book.status === 'reading');
     const completed = books.filter((book) => book.status === 'completed');
 
