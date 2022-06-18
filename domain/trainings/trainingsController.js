@@ -10,7 +10,7 @@ class trainingsController {
   };
 
   find = async (req, res) => {
-    const result = await service.getTraining(req.user);
+    const result = await service.getTraining(req.user._id);
 
     res.status(200).json({ status: 200, message: 'ok', result });
   };
