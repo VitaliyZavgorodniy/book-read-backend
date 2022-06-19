@@ -80,7 +80,7 @@ class trainingsService {
 
     if (!foundTraining) throw createError(401, 'Training was not found');
 
-    await Training.findOneAndUpdate(
+    const updatedTraining = await Training.findOneAndUpdate(
       { owner: user._id, 'books._id': stat.bookId },
       {
         $push: {
@@ -89,12 +89,17 @@ class trainingsService {
         $inc: {
           'books.$.pagesRead': stat.pages,
         },
-      }
+      },
+      { new: true }
     );
 
-    const result = await this.handleTrainingEnd(user);
+    const updatedBook = updatedTraining.books.find(
+      ({ _id }) => _id.toHexString() === stat.bookId
+    );
 
-    return result;
+    await this.handleTrainingEnd(user);
+
+    return { book: updatedBook };
   });
 
   handleTrainingEnd = asyncHandler(async (user) => {
