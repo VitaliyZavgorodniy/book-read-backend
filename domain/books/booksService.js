@@ -32,7 +32,7 @@ class booksService {
     const foundBook = await Book.findById(book.id);
 
     if (foundBook) {
-      libService.addBookToLibrary(foundBook, userID);
+      await libService.addBookToLibrary(foundBook, userID);
 
       return foundBook;
     }

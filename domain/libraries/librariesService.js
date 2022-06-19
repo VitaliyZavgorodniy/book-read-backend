@@ -58,7 +58,7 @@ class librariesService {
       );
     }
 
-    return 'ok';
+    return foundLibrary;
   });
 
   updateBookStatus = asyncHandler(async (status, bookID, user) => {
