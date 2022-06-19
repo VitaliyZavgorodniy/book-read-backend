@@ -2,7 +2,6 @@ const asyncHandler = require('express-async-handler');
 const createError = require('http-errors');
 
 const { Library } = require('./librariesModel');
-const { Book } = require('../books/booksModel');
 
 class librariesService {
   findLibrary = asyncHandler(async (parameter) => {
