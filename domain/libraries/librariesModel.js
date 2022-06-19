@@ -1,9 +1,9 @@
-const { Schema, model } = require('mongoose');
+const { Schema, model, ObjectId } = require('mongoose');
 const Joi = require('joi');
 
 const bookSchema = Schema({
   _id: {
-    type: Schema.Types.ObjectId,
+    type: ObjectId,
     ref: 'book',
     require: [true, 'Set book ID'],
   },
@@ -14,7 +14,7 @@ const bookSchema = Schema({
   status: String,
   review: {
     type: {
-      id: Schema.Types.ObjectId,
+      id: ObjectId,
       rating: Number,
       text: String,
     },
@@ -26,7 +26,7 @@ const bookSchema = Schema({
 const librarySchema = Schema(
   {
     owner: {
-      type: Schema.Types.ObjectId,
+      type: ObjectId,
       ref: 'user',
       require: [true, 'Set owner for library'],
     },

@@ -28,13 +28,13 @@ class booksService {
     return result;
   });
 
-  createBook = asyncHandler(async (book, user) => {
+  createBook = asyncHandler(async (book, userID) => {
     const foundBook = await Book.findById(book.id);
 
     if (foundBook) {
-      const result = await libService.addBookToLibrary(foundBook, user);
+      libService.addBookToLibrary(foundBook, userID);
 
-      return result;
+      return foundBook;
     }
 
     if (!foundBook) {
@@ -42,9 +42,9 @@ class booksService {
 
       const createdBook = await Book.create({ title, author, year, pages });
 
-      const result = await libService.addBookToLibrary(createdBook, user);
+      await libService.addBookToLibrary(createdBook, userID);
 
-      return result;
+      return createdBook;
     }
   });
 
@@ -100,10 +100,12 @@ class booksService {
       },
     });
 
-    const { books } = await Library.findOne({ owner: userID });
+    let library = await Library.findOne({ owner: userID });
+
+    if (!library) library = { books: [] };
 
     const result = booksList.map((book) => {
-      if (books.some(({ title }) => title === book.title)) {
+      if (library.books.some(({ title }) => title === book.title)) {
         return { ...book._doc, isOwned: true };
       }
 
